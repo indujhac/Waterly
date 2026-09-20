@@ -1,8 +1,10 @@
+import { useAuth } from "@/src/context/authContext";
 import { useTheme } from "@/src/context/ThemeContext";
 import { StyleSheet, Text, View } from "react-native";
-
+import { healthCheck } from "../../api/api";
 export default function HistoryScreen() {
   const { colors } = useTheme();
+  const { handleLogin } = useAuth();
   const weekData = [
     { day: "M", completed: true },
     { day: "T", completed: true },
@@ -12,6 +14,14 @@ export default function HistoryScreen() {
     { day: "S", completed: false },
     { day: "S", completed: false },
   ];
+
+  const testAPI = async () => {
+    const data = await healthCheck();
+    console.log("Data :", data);
+  };
+
+  testAPI();
+
   return (
     <>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
