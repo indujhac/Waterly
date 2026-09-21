@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getTokens, saveTokens } from "../utils/tokenStorage";
-const API_URL = "http://10.13.107.125:5000/api";
+const API_URL = "http://YOUR_IP:5000/api";
 const api = axios.create({
   baseURL: API_URL,
 });
