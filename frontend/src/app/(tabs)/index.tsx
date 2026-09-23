@@ -1,8 +1,10 @@
 import BobaCup from "@/src/components/BobaCup";
 import DrinkButtons from "@/src/components/DrinkButtons";
 import GoalCompleteModal from "@/src/components/GoalCompleteModal";
+import { useAuth } from "@/src/context/authContext";
 import { useHydration } from "@/src/context/HydrationContext";
 import { useTheme } from "@/src/context/ThemeContext";
+import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Alert,
@@ -13,19 +15,18 @@ import {
   TextInput,
   View,
 } from "react-native";
-
 export default function HomeScreen() {
   const { colors } = useTheme();
+  const { handleLogout, user } = useAuth();
   const { waterAmount, dailyGoal, addDrink } = useHydration();
   const [customVisible, setCustomVisible] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
   const [goalPopupVisible, setGoalPopupVisible] = useState(false);
-
+  const router = useRouter();
   const progress = useMemo(
     () => Math.min(waterAmount / dailyGoal, 1),
     [waterAmount],
   );
-
   const goalReached = waterAmount >= dailyGoal;
 
   const HandleAddWater = (amount: number) => {
@@ -60,11 +61,21 @@ export default function HomeScreen() {
       ]}
     >
       <View style={styles.header}>
-        <Text style={[styles.greeting, { color: colors.text }]}>Hey! 💧</Text>
+        <Text style={[styles.greeting, { color: colors.text }]}>
+          Hey {user?.name}! 💧
+        </Text>
         <Text style={[styles.date, { color: colors.mutedText }]}>
           Monday, September 9
         </Text>
       </View>
+
+      <Pressable
+        onPress={() => {
+          handleLogout();
+        }}
+      >
+        <Text style={{ color: colors.text }}>logout</Text>
+      </Pressable>
 
       <View style={styles.cupArea}>
         <BobaCup progress={progress} goalReached={goalReached} />

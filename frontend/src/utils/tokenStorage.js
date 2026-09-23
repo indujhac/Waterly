@@ -18,3 +18,17 @@ export const clearTokens = async () => {
   await SecureStore.deleteItemAsync("accessToken");
   await SecureStore.deleteItemAsync("refreshToken");
 };
+
+export const setOnboardingCompleted = async () => {
+  await SecureStore.setItemAsync("onboardingCompleted", "true");
+};
+
+export const hasCompletedOnboarding = async () => {
+  const value = await SecureStore.getItemAsync("onboardingCompleted");
+
+  return value === "true";
+};
+
+export const clearOnboarding = async () => {
+  const value = await SecureStore.setItemAsync("onboardingCompleted", "false");
+};

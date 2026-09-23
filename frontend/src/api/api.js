@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getTokens, saveTokens } from "../utils/tokenStorage";
-const API_URL = "http://YOUR_IP:5000/api";
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 const api = axios.create({
   baseURL: API_URL,
 });
@@ -53,11 +53,22 @@ export const healthCheck = async () => {
   return response.data;
 };
 
+export const register = async (name, email, password) => {
+  const response = await api.post("/auth/register", {
+    name,
+    email,
+    password,
+  });
+
+  return response.data;
+};
+
 export const login = async (email, password) => {
   const response = await api.post("/auth/login", {
     email,
     password,
   });
+
   return response.data;
 };
 

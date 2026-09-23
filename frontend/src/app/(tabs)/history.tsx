@@ -17,11 +17,10 @@ export default function HistoryScreen() {
 
   const testAPI = async () => {
     const data = await healthCheck();
-    console.log("Data :", data);
+    console.log("Test if backend works from history :", data);
   };
 
   testAPI();
-
   return (
     <>
       <View style={[styles.container, { backgroundColor: colors.background }]}>

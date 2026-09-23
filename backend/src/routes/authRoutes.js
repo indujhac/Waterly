@@ -5,9 +5,11 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const RefreshToken = require("../models/refreshToken");
 const authMiddleware = require("../middleware/authMiddleware");
+
 const {
   generateAccessToken,
   generateRefreshToken,
+  cleartokens,
 } = require("../utils/generateTokens");
 
 router.post("/register", async (req, res) => {
@@ -88,6 +90,7 @@ router.post("/login", async (req, res) => {
         message: "Enter Correct details",
       });
     }
+
     const accessToken = generateAccessToken(existingUser._id);
     const refreshTokenData = generateRefreshToken(existingUser._id);
     await RefreshToken.create({
@@ -96,6 +99,7 @@ router.post("/login", async (req, res) => {
       revoked: false,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
+
     res.status(200).json({
       message: "user logged in successfully",
       accessToken: accessToken,
@@ -177,4 +181,5 @@ router.get("/me", authMiddleware, async (req, res) => {
 router.get("/test", authMiddleware, async (req, res) => {
   res.status(201).json({ message: "You accessed the route", user: req.user });
 });
+
 module.exports = router;
