@@ -76,3 +76,20 @@ export const getCurrentUser = async () => {
   const response = await api.get("/auth/me");
   return response.data;
 };
+
+export const getTodayHydration = async (req, res) => {
+  const response = await api.get("/hydration/today");
+  return response.data;
+};
+
+export const updateTodayHydration = async (waterAmount) => {
+  const response = await api.patch("/hydration/today", {
+    waterAmount,
+  });
+  return response.data;
+};
+
+export const getHydrationHistory = async () => {
+  const response = await api.get("/hydration/history");
+  return response.data;
+};

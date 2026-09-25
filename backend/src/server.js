@@ -4,9 +4,12 @@ const express = require("express");
 const connectDB = require("./config/db");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
+const hydrationRoutes = require("./routes/hydrationRoutes");
 
 app.use(express.json());
+
 app.use("/api/auth", authRoutes);
+app.use("/api/hydration", hydrationRoutes);
 app.get("/api/health", (req, res) => {
   res.json({ message: "Sipup backend is running" });
 });

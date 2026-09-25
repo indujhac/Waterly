@@ -38,6 +38,18 @@ export default function HomeScreen() {
     }
   };
 
+  const getTodayDate = () => {
+    const now = new Date();
+
+    const indiaDate = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Kolkata",
+    }).format(now);
+
+    return indiaDate;
+  };
+
+  const date = getTodayDate();
+
   const addCustomAmount = () => {
     const amount = Number(customAmount);
 
@@ -64,9 +76,7 @@ export default function HomeScreen() {
         <Text style={[styles.greeting, { color: colors.text }]}>
           Hey {user?.name}! 💧
         </Text>
-        <Text style={[styles.date, { color: colors.mutedText }]}>
-          Monday, September 9
-        </Text>
+        <Text style={[styles.date, { color: colors.mutedText }]}>{date}</Text>
       </View>
 
       <Pressable

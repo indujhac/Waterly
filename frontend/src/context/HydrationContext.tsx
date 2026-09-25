@@ -1,6 +1,7 @@
-import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getTodayHydration, updateTodayHydration } from "../api/api";
 import { useAuth } from "./authContext";
+
 type HydrationContextValue = {
   waterAmount: number;
   dailyGoal: number;
@@ -15,24 +16,14 @@ export function HydrationProvider({ children }: { children: React.ReactNode }) {
   const [waterAmount, setWaterAmount] = useState<number>(0);
   const [dailyGoal, setDailyGoal] = useState<number>(2000);
 
-  const addDrink = (amount: number) => {
-    setWaterAmount((current) => {
-      const newAmount = current + amount;
-
-      if (user) {
-        const key = `hydration_${user.id}`;
-
-        SecureStore.setItemAsync(
-          key,
-          JSON.stringify({
-            date: new Date().toISOString().split("T")[0],
-            waterAmount: newAmount,
-          }),
-        );
-      }
-
-      return newAmount;
-    });
+  const addDrink = async (amount: number) => {
+    const newAmount = waterAmount + amount;
+    setWaterAmount(newAmount);
+    try {
+      await updateTodayHydration(newAmount);
+    } catch (error) {
+      console.error("Failed to update hydration:", error);
+    }
   };
 
   useEffect(() => {
@@ -41,20 +32,12 @@ export function HydrationProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const key = `hydration_${user.id}`;
-
-      const savedData = await SecureStore.getItemAsync(key);
-
-      if (!savedData) {
-        return;
-      }
-
-      const parsedData = JSON.parse(savedData);
-
-      if (parsedData.date === new Date().toISOString().split("T")[0]) {
-        setWaterAmount(parsedData.waterAmount);
-      } else {
-        setWaterAmount(0);
+      try {
+        const data = await getTodayHydration();
+        setWaterAmount(data.waterAmount);
+        setDailyGoal(data.dailyGoal);
+      } catch (error) {
+        console.error("Failed to load hydration:", error);
       }
     };
 

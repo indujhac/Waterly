@@ -9,7 +9,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 const {
   generateAccessToken,
   generateRefreshToken,
-  cleartokens,
 } = require("../utils/generateTokens");
 
 router.post("/register", async (req, res) => {
@@ -124,10 +123,12 @@ router.post("/refresh", async (req, res) => {
     if (!refreshToken) {
       return res.status(401).json({ message: "Refresh Token required" });
     }
+
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
     const storedToken = await RefreshToken.findOne({
       jti: decoded.jti,
     });
+
     if (!storedToken) {
       return res.status(401).json({
         message: "Refresh token not found",
@@ -138,6 +139,7 @@ router.post("/refresh", async (req, res) => {
         message: "Refresh token has been revoked",
       });
     }
+
     storedToken.revoked = true;
     await storedToken.save();
     console.log(decoded);
@@ -149,6 +151,7 @@ router.post("/refresh", async (req, res) => {
       revoked: false,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
+
     res.status(200).json({
       accessToken: newAccessToken,
       refreshToken: newRefreshTokenData.token,
